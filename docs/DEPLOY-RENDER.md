@@ -32,8 +32,14 @@ Deploy and copy its public URL, for example:
 Create another **Web Service**:
 - **Root directory:** `api`
 - **Environment:** `Node`
-- **Build command:** `npm ci && npm run build`
+- **Build command:** `npm ci --include=dev && npm run build`
 - **Start command:** `npm start`
+
+> Important: `NODE_ENV=production` (set below) makes npm omit `devDependencies`,
+> which would leave `typescript` uninstalled and break `npm run build`. The
+> `--include=dev` flag forces dev dependencies to install at build time. The
+> compiled entry point is `dist/api/src/index.js` (the build preserves the repo
+> structure so `shared/` imports resolve); `npm start` already points there.
 
 Set required environment variables:
 - `NODE_ENV=production`
@@ -75,7 +81,7 @@ Notes:
 
 ## 7) Common Render issues
 
-- **Build fails on API:** use `npm ci` and verify `package-lock.json` is committed.
+- **Build fails on API (`tsc: not found`):** `NODE_ENV=production` made npm skip dev deps — use `npm ci --include=dev && npm run build` and verify `package-lock.json` is committed.
 - **Image module boot timeout:** check Python dependencies and startup command.
 - **API cannot call image-module:** wrong `IMAGE_MODULE_URL` or service not healthy.
 - **DB connection errors:** validate SSL requirements and Render egress allow-listing.

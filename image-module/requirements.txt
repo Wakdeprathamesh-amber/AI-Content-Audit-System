@@ -3,6 +3,7 @@ uvicorn[standard]>=0.24.0
 pillow>=10.2.0
 pillow-avif-plugin>=1.4.3
 opencv-python>=4.8.1
+numpy>=1.26.0
 httpx>=0.25.1
 python-dotenv>=1.0.0
 pydantic>=2.5.0

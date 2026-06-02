@@ -325,6 +325,7 @@ async def general_exception_handler(_request, exc):
 if __name__ == "__main__":
     import uvicorn
 
-    port = int(os.getenv("IMAGE_MODULE_PORT", "8000"))
+    # Render injects PORT; local/dev can keep using IMAGE_MODULE_PORT.
+    port = int(os.getenv("PORT", os.getenv("IMAGE_MODULE_PORT", "8000")))
     logger.info(f"Starting Image Audit Module on port {port}")
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True, log_level="info")

@@ -1,0 +1,81 @@
+# Render Blueprint for the AI Content Audit System.
+# Two web services that must be deployed together. See docs/DEPLOY-RENDER.md.
+#
+# Secrets (sync: false) are intentionally NOT stored here — set them in the
+# Render dashboard / Blueprint sync prompt. Never commit real credentials.
+services:
+  # ---- Image module (Python / FastAPI) ----
+  - type: web
+    name: ai-content-image-module
+    runtime: python
+    rootDir: image-module
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false
+      # Must match the API service's API_KEY so the API can call this module.
+      - key: API_KEY
+        sync: false
+      # Comma-separated exact origins. Add the API/frontend origin(s).
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "60000"
+      - key: RATE_LIMIT_MAX
+        value: "60"
+
+  # ---- API (Node.js / TypeScript) ----
+  - type: web
+    name: ai-content-api
+    runtime: node
+    rootDir: api
+    plan: starter
+    # --include=dev forces devDependencies (typescript) to install even though
+    # NODE_ENV=production would otherwise make npm omit them, breaking `tsc`.
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Paste the image-module's public URL after its first deploy, e.g.
+      # https://ai-content-image-module.onrender.com
+      - key: IMAGE_MODULE_URL
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      # Shared secret — must equal the image module's API_KEY above.
+      - key: API_KEY
+        sync: false
+      # Database (Redshift / PostgreSQL)
+      - key: AMBER_DB_HOST
+        sync: false
+      - key: AMBER_DB_PORT
+        value: "5439"
+      - key: AMBER_DB_NAME
+        sync: false
+      - key: AMBER_DB_USER
+        sync: false
+      - key: AMBER_DB_PASSWORD
+        sync: false
+      # Set true once a CA bundle is wired; false accepts the managed cert.
+      - key: DB_SSL_REJECT_UNAUTHORIZED
+        value: "false"
+      # Comma-separated exact origins for the dashboard/frontend.
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "60000"
+      - key: RATE_LIMIT_MAX
+        value: "30"
+      # Output target: 'database' | 'sheets' | 'both'. Add Google Sheets vars
+      # below only if using 'sheets' or 'both'.
+      - key: OUTPUT_MODE
+        value: database

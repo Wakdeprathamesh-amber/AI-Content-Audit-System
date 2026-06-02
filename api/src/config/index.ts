@@ -7,10 +7,26 @@
  */
 
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 
-// Load .env from repo root exactly once.
-dotenv.config({ path: path.join(__dirname, '../../../.env') });
+// Load .env from repo root exactly once. __dirname differs between dev
+// (src/config) and the compiled build (dist/api/src/config), so probe the
+// known candidate locations and load the first that exists. On Render no .env
+// file is present — env vars are injected by the platform — so the final
+// fallback is a harmless no-op.
+const envCandidates = [
+  path.resolve(__dirname, '../../../.env'), // dev: src/config -> repo root
+  path.resolve(__dirname, '../../../../../.env'), // build: dist/api/src/config -> repo root
+  path.resolve(process.cwd(), '../.env'), // cwd = api/
+  path.resolve(process.cwd(), '.env'),
+];
+const envPath = envCandidates.find((p) => fs.existsSync(p));
+if (envPath) {
+  dotenv.config({ path: envPath });
+} else {
+  dotenv.config();
+}
 
 function num(key: string, fallback: number): number {
   const raw = process.env[key];
