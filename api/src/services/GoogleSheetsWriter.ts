@@ -3,6 +3,34 @@ import { AuditResult, HeroAudit } from '../../../shared/types';
 import { categoriesMatchForAudit } from '../../../shared/imageCategories';
 import { config } from '../config';
 
+const GOOGLE_SHEETS_SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+
+/**
+ * Build GoogleAuth from either inline service-account JSON or a key-file path.
+ *
+ * Hosts like Render inject secrets as env vars, not files, so we accept the raw
+ * JSON via GOOGLE_SHEETS_CREDENTIALS_JSON (preferred) or — for backwards-compat —
+ * JSON pasted into GOOGLE_SHEETS_CREDENTIALS_PATH. Otherwise the value is treated
+ * as a file path. Parse failures never echo the credential text (it contains a
+ * private key) — only a generic message is thrown.
+ */
+function buildGoogleAuth() {
+  const { credentialsJson, credentialsPath } = config.googleSheets;
+  const inline = credentialsJson.trim() || (credentialsPath.trim().startsWith('{') ? credentialsPath.trim() : '');
+  if (inline) {
+    let credentials: Record<string, unknown>;
+    try {
+      credentials = JSON.parse(inline);
+    } catch {
+      throw new Error(
+        'Invalid Google service-account JSON in GOOGLE_SHEETS_CREDENTIALS_JSON/PATH (could not parse).'
+      );
+    }
+    return new google.auth.GoogleAuth({ credentials, scopes: GOOGLE_SHEETS_SCOPES });
+  }
+  return new google.auth.GoogleAuth({ keyFile: credentialsPath, scopes: GOOGLE_SHEETS_SCOPES });
+}
+
 /**
  * Human-readable label for the hero-audit verdict.
  * The score and source are inlined so the supply team can scan the column.
@@ -123,11 +151,7 @@ export class GoogleSheetsWriter {
 
   constructor(spreadsheetId: string) {
     this.spreadsheetId = spreadsheetId;
-    const auth = new google.auth.GoogleAuth({
-      keyFile: config.googleSheets.credentialsPath,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-    this.sheets = google.sheets({ version: 'v4', auth });
+    this.sheets = google.sheets({ version: 'v4', auth: buildGoogleAuth() });
   }
 
   // ---- Public ----

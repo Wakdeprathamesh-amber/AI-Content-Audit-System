@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import axios from 'axios';
+import fs from 'fs';
 import path from 'path';
 import { config } from './config';
 import { db } from './config/database';
@@ -26,12 +27,22 @@ app.use(
   })
 );
 
+// Resolve the static UI directory. `public/` is a static asset folder that tsc
+// does NOT copy into dist, and __dirname differs between dev (src) and the
+// compiled build (dist/api/src), so probe the known locations.
+const publicDir =
+  [
+    path.resolve(__dirname, '../public'), // dev: src -> api/public
+    path.resolve(__dirname, '../../../public'), // build: dist/api/src -> api/public
+    path.resolve(process.cwd(), 'public'), // cwd = api/
+  ].find((p) => fs.existsSync(p)) ?? path.resolve(__dirname, '../public');
+
 // Static UI (no auth so the page can load; the API routes are still gated).
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(publicDir));
 
 // ---- Public routes ----
 app.get('/', (_req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 app.get('/api', (_req: Request, res: Response) => {

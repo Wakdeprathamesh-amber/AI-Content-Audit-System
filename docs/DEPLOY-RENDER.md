@@ -67,7 +67,11 @@ Notes:
 
 - Do not commit `.env` or credential JSON files.
 - Add secrets directly in Render Environment settings.
-- If Google credentials are needed, store JSON in an env var and reconstruct at runtime, or use a secure file mount strategy.
+- If Google credentials are needed, paste the raw service-account JSON into the
+  `GOOGLE_SHEETS_CREDENTIALS_JSON` env var (the app parses inline JSON directly).
+  Do NOT put JSON into `GOOGLE_SHEETS_CREDENTIALS_PATH` — that var is a file path,
+  and passing JSON there makes the app try to open the JSON as a filename
+  (`ENAMETOOLONG`) and can leak the key into logs.
 
 ## 6) Post-deploy verification checklist
 

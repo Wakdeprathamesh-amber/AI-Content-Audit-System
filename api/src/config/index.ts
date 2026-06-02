@@ -105,7 +105,12 @@ export const config = {
   auditResultsDir: str('AUDIT_RESULTS_DIR', './audit-results'),
   googleSheets: {
     spreadsheetId: strOrEmpty('GOOGLE_SHEETS_SPREADSHEET_ID'),
+    // Either a path to a key file (local/dev) OR — on hosts like Render where
+    // mounting a file is awkward — the raw service-account JSON. Set the JSON in
+    // GOOGLE_SHEETS_CREDENTIALS_JSON (preferred). For backwards-compatibility the
+    // loader also accepts JSON pasted directly into GOOGLE_SHEETS_CREDENTIALS_PATH.
     credentialsPath: strOrEmpty('GOOGLE_SHEETS_CREDENTIALS_PATH'),
+    credentialsJson: strOrEmpty('GOOGLE_SHEETS_CREDENTIALS_JSON'),
   },
 
   // Performance
