@@ -64,14 +64,24 @@ app.add_middleware(
 
 
 # ---- Auth dependency ----
+_warned_no_api_key = False
+
+
 async def require_api_key(x_api_key: Optional[str] = Header(default=None)) -> None:
     """API-key check using constant-time compare.
 
-    If API_KEY is empty, auth is disabled (local dev only). In production it MUST be set.
+    If API_KEY is empty, auth is disabled and we warn (instead of failing closed)
+    so a fresh deploy works out of the box. This module has a public URL and makes
+    paid OpenAI calls, so setting API_KEY in production is strongly recommended.
     """
+    global _warned_no_api_key
     if not API_KEY:
-        if NODE_ENV == "production":
-            raise HTTPException(status_code=503, detail="API_KEY must be configured in production")
+        if NODE_ENV == "production" and not _warned_no_api_key:
+            _warned_no_api_key = True
+            logger.warning(
+                "API_KEY is not set — /api/v1 is UNAUTHENTICATED. Set API_KEY "
+                "(same value as the API service) to require x-api-key."
+            )
         return
     if not x_api_key or not secrets.compare_digest(x_api_key, API_KEY):
         raise HTTPException(status_code=401, detail="Missing or invalid x-api-key header")
