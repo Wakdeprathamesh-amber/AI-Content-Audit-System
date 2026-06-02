@@ -15,15 +15,26 @@ const app = express();
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('combined'));
 
-// CORS: explicit allowlist; never `*`.
+// CORS: allow same-origin (the dashboard is served by THIS service) plus any
+// configured external origins; never `*`. Uses the delegate form so we can see
+// the request host and treat the dashboard's own origin as same-origin —
+// browsers attach an Origin header to JSON POSTs even on same-origin requests.
+// Disallowed origins get CORS simply disabled (no headers) rather than a thrown
+// error that would surface as a 500.
+function isSameOrigin(req: Request, origin: string): boolean {
+  const host = (req.headers['x-forwarded-host'] as string) || req.headers.host;
+  if (!host) return false;
+  return origin === `https://${host}` || origin === `http://${host}`;
+}
+
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Same-origin (no Origin header) or curl/tools — allow.
-      if (!origin) return callback(null, true);
-      if (config.corsAllowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error(`CORS: origin '${origin}' not allowed`));
-    },
+  cors((req: Request, callback) => {
+    const origin = req.headers.origin;
+    const allowed =
+      !origin ||
+      config.corsAllowedOrigins.includes(origin) ||
+      isSameOrigin(req, origin);
+    callback(null, { origin: allowed, credentials: false });
   })
 );
 
