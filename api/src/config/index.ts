@@ -45,9 +45,29 @@ function csv(key: string, fallback: string[]): string[] {
     .filter((s) => s.length > 0);
 }
 
+const DEFAULTS = {
+  performance: {
+    parallelImageBatchSize: 4,
+    cacheEnabled: true,
+    cacheTtlSeconds: 30 * 24 * 60 * 60,
+  },
+  thresholds: {
+    minResolutionWidth: 800,
+    minResolutionHeight: 800,
+    recommendedResolutionWidth: 1920,
+    recommendedResolutionHeight: 1080,
+    blur: 100,
+    sharpness: 50,
+    duplicateSimilarity: 95,
+    categoryConfidence: 70,
+    watermarkConfidence: 85,
+  },
+} as const;
+
 export const config = {
   // Servers
-  apiPort: num('API_PORT', 3000),
+  // Render injects PORT; local/dev can keep using API_PORT.
+  apiPort: num('PORT', num('API_PORT', 3000)),
   imageModuleUrl: str('IMAGE_MODULE_URL', 'http://localhost:8000'),
 
   // Database
@@ -73,13 +93,13 @@ export const config = {
   },
 
   // Performance
-  parallelImageBatchSize: num('PARALLEL_IMAGE_BATCH_SIZE', 4),
+  parallelImageBatchSize: DEFAULTS.performance.parallelImageBatchSize,
   safeModeEnabled: bool('SAFE_MODE_ENABLED', false),
   safeParallelImageBatchSize: num('SAFE_PARALLEL_IMAGE_BATCH_SIZE', 1),
   largePropertyImageCount: num('LARGE_PROPERTY_IMAGE_COUNT', 20),
   largePropertyBatchSize: num('LARGE_PROPERTY_BATCH_SIZE', 2),
-  cacheEnabled: bool('CACHE_ENABLED', true),
-  cacheTtlSeconds: num('CACHE_TTL_SECONDS', 30 * 24 * 60 * 60),
+  cacheEnabled: DEFAULTS.performance.cacheEnabled,
+  cacheTtlSeconds: DEFAULTS.performance.cacheTtlSeconds,
   imageRequestStaggerMs: num('IMAGE_REQUEST_STAGGER_MS', 150),
   imageBatchDelayMs: num('IMAGE_BATCH_DELAY_MS', 700),
   safeImageRequestStaggerMs: num('SAFE_IMAGE_REQUEST_STAGGER_MS', 250),
@@ -95,15 +115,15 @@ export const config = {
 
   // Thresholds — single source of truth for code AND docs sheet.
   thresholds: {
-    minResolutionWidth: num('MIN_RESOLUTION_WIDTH', 800),
-    minResolutionHeight: num('MIN_RESOLUTION_HEIGHT', 800),
-    recommendedResolutionWidth: num('RECOMMENDED_RESOLUTION_WIDTH', 1920),
-    recommendedResolutionHeight: num('RECOMMENDED_RESOLUTION_HEIGHT', 1080),
-    blur: num('BLUR_THRESHOLD', 100),
-    sharpness: num('SHARPNESS_THRESHOLD', 50),
-    duplicateSimilarity: num('DUPLICATE_SIMILARITY_THRESHOLD', 95),
-    categoryConfidence: num('CATEGORY_CONFIDENCE_THRESHOLD', 70),
-    watermarkConfidence: num('WATERMARK_CONFIDENCE_THRESHOLD', 85),
+    minResolutionWidth: DEFAULTS.thresholds.minResolutionWidth,
+    minResolutionHeight: DEFAULTS.thresholds.minResolutionHeight,
+    recommendedResolutionWidth: DEFAULTS.thresholds.recommendedResolutionWidth,
+    recommendedResolutionHeight: DEFAULTS.thresholds.recommendedResolutionHeight,
+    blur: DEFAULTS.thresholds.blur,
+    sharpness: DEFAULTS.thresholds.sharpness,
+    duplicateSimilarity: DEFAULTS.thresholds.duplicateSimilarity,
+    categoryConfidence: DEFAULTS.thresholds.categoryConfidence,
+    watermarkConfidence: DEFAULTS.thresholds.watermarkConfidence,
   },
 
   // Security

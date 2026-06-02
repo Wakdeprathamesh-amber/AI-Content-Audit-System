@@ -37,12 +37,19 @@ Create another **Web Service**:
 
 Set required environment variables:
 - `NODE_ENV=production`
-- `PORT` (Render injects this; do not hardcode)
 - `IMAGE_MODULE_URL` = URL from step 2
 - `OPENAI_API_KEY`
-- Database variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, etc.)
+- Database variables (`AMBER_DB_HOST`, `AMBER_DB_PORT`, `AMBER_DB_NAME`, `AMBER_DB_USER`, `AMBER_DB_PASSWORD`)
+- `DB_SSL_REJECT_UNAUTHORIZED=false` (or wire a CA bundle and set strict SSL)
 - Google Sheets variables (if `OUTPUT_MODE=sheets`)
-- `API_KEY` (optional but recommended)
+- `API_KEY` (recommended for all non-local deployments)
+- `CORS_ALLOWED_ORIGINS=https://<your-frontend-domain>`
+- `RATE_LIMIT_WINDOW_MS=60000`
+- `RATE_LIMIT_MAX=30`
+
+Notes:
+- Render injects `PORT` automatically; the API now supports `PORT` and `API_PORT`.
+- For multiple CORS origins, use a comma-separated list with exact origins.
 
 ## 4) Health check and networking
 
