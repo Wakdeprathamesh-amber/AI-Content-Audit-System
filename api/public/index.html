@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content QC — Amber Supply</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">QC</div>
+        <h1>Content QC</h1>
+        <p>Media &amp; text quality audits</p>
+      </div>
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" onclick="resetForm(); window.scrollTo({top:0})">
+          New audit
+        </button>
+      </nav>
+      <div class="health-card">
+        <div style="font-weight:600;color:#f8fafc;margin-bottom:8px;font-size:12px">System status</div>
+        <div class="health-row" id="healthDb"><span class="dot warn"></span>Database</div>
+        <div class="health-row" id="healthImage"><span class="dot warn"></span>Image module</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="page-header">
+        <div>
+          <h2>Run property audit</h2>
+          <p class="sub">Active listings only · Results sync to Google Sheets when configured</p>
+        </div>
+      </header>
+
+      <div id="alertError" class="alert alert-error"></div>
+      <div id="alertSuccess" class="alert alert-success"></div>
+
+      <section class="panel">
+        <div class="panel-title">Audit scope</div>
+        <div class="scope-grid">
+          <div class="scope-card" data-scope="media">
+            <strong>Media</strong>
+            <span>Images, hero, duplicates</span>
+          </div>
+          <div class="scope-card" data-scope="text">
+            <strong>Text</strong>
+            <span>Claims vs PMG page</span>
+          </div>
+          <div class="scope-card selected" data-scope="both">
+            <strong>Media + Text</strong>
+            <span>Full content QC</span>
+          </div>
+        </div>
+
+        <form id="auditForm">
+          <input type="hidden" id="auditType" value="both">
+          <div class="form-grid">
+            <div>
+              <label for="propertyId">Property ID</label>
+              <input type="text" id="propertyId" placeholder="e.g. 170410" required autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Run audit</button>
+          </div>
+
+          <div class="check-groups">
+            <div class="check-group" id="mediaChecks">
+              <h4>Media checks</h4>
+              <label><input type="checkbox" name="checks" value="quality" checked> Resolution &amp; blur</label>
+              <label><input type="checkbox" name="checks" value="watermark" checked> Watermark</label>
+              <label><input type="checkbox" name="checks" value="category" checked> Category tag</label>
+            </div>
+            <div class="check-group" id="textChecks">
+              <h4>Text checks</h4>
+              <label><input type="checkbox" name="textChecks" value="extraction" checked> Extraction</label>
+              <label><input type="checkbox" name="textChecks" value="fact_check" checked> PMG fact check</label>
+              <label><input type="checkbox" name="textChecks" value="missing_info" checked> Missing info &amp; diff</label>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section id="loading" class="panel loading">
+        <div class="spinner"></div>
+        <p style="font-weight:600">Running audit…</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:8px">Large galleries may take several minutes.</p>
+      </section>
+
+      <section id="results" class="results">
+        <div class="panel">
+          <div class="tabs" id="resultTabs"></div>
+
+          <div id="panel-overview" class="tab-panel active">
+            <div id="overviewContent"></div>
+            <div class="actions-row">
+              <a id="sheetsLink" href="#" target="_blank" rel="noopener" class="btn btn-secondary hidden">Open Google Sheet</a>
+              <button type="button" class="btn btn-secondary" onclick="downloadJSON()">Download JSON</button>
+              <button type="button" class="btn btn-secondary" onclick="resetForm()">New audit</button>
+            </div>
+          </div>
+
+          <div id="panel-media" class="tab-panel">
+            <div class="kpi-grid" id="kpiGrid"></div>
+            <div class="toolbar">
+              <div class="filters" id="filterChips"></div>
+              <input type="text" class="search-box" id="imageSearch" placeholder="Search images…">
+            </div>
+            <div class="image-list" id="imageList"></div>
+            <div class="empty-state" id="emptyFilter" style="display:none">No images match this filter.</div>
+          </div>
+
+          <div id="panel-text" class="tab-panel">
+            <div id="textContent"></div>
+          </div>
+
+          <div id="panel-issues" class="tab-panel">
+            <div class="panel-title">All issues (<span id="issueCount">0</span>)</div>
+            <div id="issuesList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

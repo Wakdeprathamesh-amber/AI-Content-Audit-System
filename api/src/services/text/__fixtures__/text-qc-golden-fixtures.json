@@ -1,0 +1,77 @@
+[
+  {
+    "propertyId": "p-1001",
+    "propertyName": "Alpha House",
+    "pmgSourceUrl": "https://www.wearehomesforstudents.com/properties/alpha-house",
+    "sections": {
+      "description": "Rooms from £250 per week with £300 deposit. 5 min walk to campus. Rooms are 120 sq ft.",
+      "faqs": "Do you offer discounts? Yes, £200 cashback offer is available.",
+      "house_rules": "No smoking and no parties.",
+      "cancellation_policy": "Cancel within 14 days for full refund.",
+      "amenities_blurbs": "Onsite gym, laundry, wifi and study room.",
+      "other": ""
+    },
+    "referenceUrls": ["https://www.wearehomesforstudents.com/properties/alpha-house"],
+    "structuredBaseline": { "amenities": [], "policies": [], "faqs": [] }
+  },
+  {
+    "propertyId": "p-1002",
+    "propertyName": "Beta Point",
+    "pmgSourceUrl": "https://www.wearehomesforstudents.com/properties/beta-point",
+    "sections": {
+      "description": "From $1200 per month. Deposit $500. 1.2 km from city center.",
+      "faqs": "Parking is available for residents.",
+      "house_rules": "No pets allowed.",
+      "cancellation_policy": "Cancellation requires 30 day notice.",
+      "amenities_blurbs": "Pool, kitchen, and air conditioning.",
+      "other": ""
+    },
+    "referenceUrls": ["https://www.wearehomesforstudents.com/properties/beta-point"],
+    "structuredBaseline": { "amenities": [], "policies": [], "faqs": [] }
+  },
+  {
+    "propertyId": "p-1003",
+    "propertyName": "Gamma Court",
+    "pmgSourceUrl": null,
+    "sections": {
+      "description": "Modern rooms with all bills included.",
+      "faqs": "Is deposit required? Please check contract.",
+      "house_rules": "",
+      "cancellation_policy": "",
+      "amenities_blurbs": "WiFi and security included.",
+      "other": ""
+    },
+    "referenceUrls": [],
+    "structuredBaseline": { "amenities": [], "policies": [], "faqs": [] }
+  },
+  {
+    "propertyId": "p-1004",
+    "propertyName": "Delta Residences",
+    "pmgSourceUrl": "https://www.wearehomesforstudents.com/properties/delta-residences",
+    "sections": {
+      "description": "Room size 15 m2 and 10 min drive to university.",
+      "faqs": "Free week offer in selected tenancies.",
+      "house_rules": "Quiet hours after 10pm.",
+      "cancellation_policy": "No cancellation after move-in.",
+      "amenities_blurbs": "Parking and gym available.",
+      "other": ""
+    },
+    "referenceUrls": ["https://www.wearehomesforstudents.com/properties/delta-residences"],
+    "structuredBaseline": { "amenities": [], "policies": [], "faqs": [] }
+  },
+  {
+    "propertyId": "p-1005",
+    "propertyName": "Epsilon Studios",
+    "pmgSourceUrl": "https://www.wearehomesforstudents.com/properties/epsilon-studios",
+    "sections": {
+      "description": "Studios from €980 per month with €400 deposit.",
+      "faqs": "How far is station? 8 minutes walk.",
+      "house_rules": "No overnight guests for more than 3 nights.",
+      "cancellation_policy": "Flexible cancellation if visa denied.",
+      "amenities_blurbs": "Laundry, wifi, shuttle bus and heating.",
+      "other": ""
+    },
+    "referenceUrls": ["https://www.wearehomesforstudents.com/properties/epsilon-studios"],
+    "structuredBaseline": { "amenities": [], "policies": [], "faqs": [] }
+  }
+]

@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables — NEVER commit
+.env
+.env.*
+!.env.example
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Audit results — local artifacts, do not commit
+audit-results/
+
+# Credentials — explicit excludes (don't rely on global *.json)
+google-credentials.json
+google-credentials*.json
+**/google-credentials.json
+**/google-credentials*.json
+credentials/
+service-account*.json
+*.pem
+*.key
+*-key.json
+
+# Test coverage
+coverage/
+.nyc_output/
+.pytest_cache/
